@@ -1,4 +1,25 @@
 extends layout
 
 block content
-  p Get on with it
+  .form-wrapper
+    h1 Add User
+    form(id="form")
+      .form-item
+        label(for='username')
+        input(type='text', name='username', required='required', placeholder='User Name' maxlength=25 )
+      .form-item
+          label(for='email')
+          input(type='email', name='email', required='required', placeholder='Email Address')
+      .form-item
+        label(for='phoneno')
+        input(type='number', name='phoneno', required='required', placeholder='Phone Number' pattern='[0–9]' maxlength=10)
+      .form-item
+        label(for='password')
+        input(type='password', name='password', required='required', placeholder='Password' maxlength=20)
+      .form-item
+        label(for='confirm_password')
+        input(type='password', name='confirm_password', required='required', placeholder='Confirm Password' maxlength=20)
+      .button-panel
+        input.button(type='submit', title='Add', value='Add')
+    .form-footer
+  script(src='/javascripts/index.js')
