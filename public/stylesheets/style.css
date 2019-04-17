@@ -100,3 +100,23 @@ form {
 .form-footer a:hover {
   border-bottom: 1px dotted #8c8c8c;
 }
+
+
+input:valid {
+  border-bottom: 1px solid #3FC7A8;
+}
+
+input:invalid {
+  border-bottom: 1px solid #D45E66;
+}
+
+.validation-error {
+  font-size: 10px;
+  padding-left: 4px;
+  color: #ee3e52;
+  display: none;
+}
+
+.show {
+  display: block;
+}
