@@ -1,11 +1,12 @@
 const validityConfig = {
   username: {
     MIN_LENGTH: 3,
-    MAX_LENGTH: 20,
-    PATTERN: "^[a-z0-9_-]{3,20}$",
+    MAX_LENGTH: 25,
+    PATTERN: "^[a-z0-9_-]{3,25}$",
     ERROR: "Username Invalid"
   },
   email: {
+    MAX_LENGTH: 25,
     PATTERN: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
     ERROR: "Email ID Invalid"
   },
@@ -17,16 +18,16 @@ const validityConfig = {
   },
   password: {
     MIN_LENGTH: 5,
-    MAX_LENGTH: 20,
+    MAX_LENGTH: 50,
     PATTERN:
-      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,20}",
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}",
     ERROR: "Password Invalid"
   },
   confirm_password: {
     MIN_LENGTH: 5,
-    MAX_LENGTH: 20,
+    MAX_LENGTH: 50,
     PATTERN:
-      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,20}",
+      "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}",
     ERROR: "Passwords does not match"
   }
 };
@@ -45,7 +46,7 @@ const form = document.querySelector("#form");
 
 form.addEventListener("submit", handleSubmit);
 
-function handleSubmit(e) {
+async function handleSubmit(e) {
   e.preventDefault();
   const formData = getFormData();
   if (customCheckvalidity(formData) && form.checkValidity() ) {
@@ -53,16 +54,20 @@ function handleSubmit(e) {
     //handle response
     //handle error
     showValidationMessage();
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify(formData),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => res.json())
-      .then(response => console.log("Success:", JSON.stringify(response)))
-      .catch(error => console.error("Error:", error));
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        body: JSON.stringify(formData),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      const jsonResponse = await response.json()
+      const resultDiv = document.querySelector('.form-footer')
+      resultDiv.innerHTML = jsonResponse.body.message || jsonResponse.error
+    } catch (e) {
+      console.log(e)
+    }
   } else {
     showValidationMessage();
   }
@@ -136,7 +141,7 @@ function validateUsername(username) {
 function validateEmail(email) {
   const constraint = validityConfig.email;
   const regexEmail = new RegExp(constraint.PATTERN);
-  if (regexEmail.test(email)) {
+  if (email.length <= constraint.MAX_LENGTH && regexEmail.test(email)) {
     return true;
   }
   return false;
