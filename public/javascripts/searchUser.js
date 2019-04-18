@@ -15,8 +15,7 @@ const SEARCH_URL = "http://localhost:3000/user?email=";
 const users = document.querySelector('.users')
 const searchForm = document.querySelector("#form_search");
 searchForm.addEventListener("submit", handleSearchSubmit);
-const resultDiv = document.querySelector('.search_result')
-resultDiv.addEventListener('click', handleDelete)
+users.addEventListener('click', handleDelete)
 
 
 async function handleSearchSubmit(e) {
@@ -38,7 +37,7 @@ async function handleSearchSubmit(e) {
         <h2 style="text-align:left;margin: 5px 30px;">Users</h2>
         <p style="padding: 10px; background-color: #eae4e4;margin:0px 30px " >
         <span>1.${jsonResponse.body.data.userName}</span>
-        <span><i class="fas fa-trash-alt"></i></span>
+        <span><i class="fas fa-trash-alt" data-email='${jsonResponse.body.data.emailId}'></i></span>
         </p>`
       } else {
         users.innerHTML = 'User not found'
@@ -53,8 +52,27 @@ async function handleSearchSubmit(e) {
   }
 }
 
-function handleDelete(e) {
+async function handleDelete(e) {
   console.log(e.target)
+  if (e.target !== document.querySelector('i')) return
+  try {
+    const response = await fetch(`${SEARCH_URL}${e.target.getAttribute('data-email')}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    const jsonResponse = await response.json()
+    if (jsonResponse.body.data) {
+      users.innerHTML = `User deleted`
+    } else {
+      users.innerHTML = 'User not found'
+    }
+
+  } catch (e) {
+    console.log(e)
+    users.innerHTML = 'User not found'
+  }
 }
 
 function getEmailData() {
