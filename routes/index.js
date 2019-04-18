@@ -5,7 +5,7 @@ router.get("/", (req, res, next) => {
   res.render("index");
 });
 
-/* POST req to create/update user */
+/* POST req to create or update user */
 router.post("/", async (req, res, next) => {
   try {
     const [user, created] = await User.findOrCreate({
@@ -27,42 +27,110 @@ router.post("/", async (req, res, next) => {
           password: req.body.password,
           dateTime: new Date()
         },
-        { where: { emailId: req.body.email } }
+        {
+          where: {
+            emailId: req.body.email,
+            password: req.body.password
+          }
+        }
       );
+      if (result[0] === 0) {
+        return res.status(200).json({
+          body: {
+            message: "Resource not updated. Credentials wrong",
+            data: result
+          },
+          error: ""
+        });
+      }
       return res.status(201).json({
         body: {
-          message: 'Resource successfully updated',
+          message: "Resource successfully updated",
           data: result
         },
-        error: {}
-      })
+        error: ""
+      });
     }
     return res.status(201).json({
       body: {
-        message: 'Resource successfully created',
+        message: "Resource successfully created",
         data: user
       },
-      error : {}
-    })
+      error: ""
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      body: { },
-      error: 'Please try again later'
-    })
+      body: {},
+      error: "Please try again later"
+    });
   }
-  // .then(result =>
-  //   handleResult(result)
-  // )
-  // .catch(err =
-  //   handleError(err)
-  // )
-  // .then(([user, created]) => {
-  //   console.log(user.get({
-  //     plain: true
-  //   }))
-  //   console.log(created)
-  // })
+});
+
+/* GET req to find user */
+router.get("/user", async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        emailId: req.query.email
+      }
+    });
+    if (!user) {
+      return res.status(200).json({
+        body: {
+          message: "User not found",
+          data: {}
+        },
+        error: ""
+      });
+    }
+    return res.status(200).json({
+      body: {
+        message: "User found",
+        data: user
+      },
+      error: ""
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      body: {},
+      error: "Please try again later"
+    });
+  }
+});
+
+/* DELETE req to delete user */
+router.delete("/user", async (req, res, next) => {
+  try {
+    const user = await User.destroy({
+      where: {
+        emailId: req.query.email
+      }
+    });
+    if (!user) {
+      return res.status(404).json({
+        body: {
+          message: "User not found",
+          data: {}
+        },
+        error: ""
+      });
+    }
+    return res.status(200).json({
+      body: {
+        message: "User deleted",
+        data: user
+      },
+      error: ""
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      body: {},
+      error: "Please try again later"
+    });
+  }
 });
 
 module.exports = router;

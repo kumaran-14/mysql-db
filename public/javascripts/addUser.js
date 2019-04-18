@@ -3,32 +3,27 @@ const validityConfig = {
     MIN_LENGTH: 3,
     MAX_LENGTH: 25,
     PATTERN: "^[a-z0-9_-]{3,25}$",
-    ERROR: "Username Invalid"
   },
   email: {
     MAX_LENGTH: 25,
     PATTERN: /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-    ERROR: "Email ID Invalid"
   },
   phoneno: {
     MIN_LENGTH: 10,
     MAX_LENGTH: 10,
     PATTERN: "^[0-9]{10,10}$",
-    ERROR: "Phone number Invalid"
   },
   password: {
     MIN_LENGTH: 5,
     MAX_LENGTH: 50,
     PATTERN:
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}",
-    ERROR: "Password Invalid"
   },
   confirm_password: {
     MIN_LENGTH: 5,
     MAX_LENGTH: 50,
     PATTERN:
       "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}",
-    ERROR: "Passwords does not match"
   }
 };
 
@@ -40,22 +35,18 @@ const inputValidityState = {
   confirm_password: false
 };
 
-const url = "http://localhost:3000/";
+const URL = "http://localhost:3000/";
 
 const form = document.querySelector("#form");
-
 form.addEventListener("submit", handleSubmit);
 
 async function handleSubmit(e) {
   e.preventDefault();
   const formData = getFormData();
   if (customCheckvalidity(formData) && form.checkValidity() ) {
-    //submitdata
-    //handle response
-    //handle error
     showValidationMessage();
     try {
-      const response = await fetch(url, {
+      const response = await fetch(URL, {
         method: "POST",
         body: JSON.stringify(formData),
         headers: {

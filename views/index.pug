@@ -1,30 +1,44 @@
 extends layout
 
 block content
-  .form-wrapper
-    h1 Add User
-    form(id="form" novalidate)
-      .form-item
-        label(for='username')
-        input(type='text', name='username', required='required', placeholder='User Name' title="Must 3 to 25 characters length. Only a-z, 0-9, _, - allowed" minlength=3 maxlength=25 pattern='^[a-z0-9_-]{3,25}$' )
-        p(class="validation-error username") Username Invalid
-      .form-item
-          label(for='email')
-          input(type='email', name='email', required='required', placeholder='Email Address' title="Must be a valid Email ID within 25 characters" maxlength=25)
-          p(class="validation-error email") Email ID Invalid
-      .form-item
-        label(for='phoneno')
-        input(type='number', name='phoneno', required='required', placeholder='Phone Number' pattern='[0–9]' minlength=10 maxlength=10 title="Your 10 digit phone number")
-        p(class="validation-error phoneno") Phone Number Invalid
-      .form-item
-        label(for='password')
-        input(type='password', name='password', required='required', placeholder='Password' pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}$" minlength=5 maxlength=50 title="Minimum 5 and maximum 50 characters, at least 1 uppercase letter, 1 lowercase letter, 1 number and one special character @$!%*?&")
-        p(class="validation-error password") Password Invalid
-      .form-item
-        label(for='confirm_password')
-        input(type='password', name='confirm_password', required='required', placeholder='Confirm Password' pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}$" minlength=5 maxlength=50 title="Both passwords should match")
-        p(class="validation-error confirm_password") Passwords do not match
-      .button-panel
-        input.button(type='submit', title='Add', value='Add')
-    .form-footer
-  script(src='/javascripts/index.js')
+  .section
+    .form-wrapper
+      h1 Add User
+      form(id="form" novalidate)
+        .form-item
+          label(for='username')
+          input(type='text', name='username', required='required', placeholder='User Name' title="Must 3 to 25 characters length. Only a-z, 0-9, _, - allowed" minlength=3 maxlength=25 pattern='^[a-z0-9_-]{3,25}$' )
+          p(class="validation-error username") Username Invalid
+        .form-item
+            label(for='email')
+            input(type='email', name='email', required='required', placeholder='Email Address' title="Must be a valid Email ID within 25 characters" maxlength=25)
+            p(class="validation-error email") Email ID Invalid
+        .form-item
+          label(for='phoneno')
+          input(type='number', name='phoneno', required='required', placeholder='Phone Number' pattern='[0–9]' minlength=10 maxlength=10 title="Your 10 digit phone number")
+          p(class="validation-error phoneno") Phone Number Invalid
+        .form-item
+          label(for='password')
+          input(type='password', name='password', required='required', placeholder='Password' pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}$" minlength=5 maxlength=50 title="Minimum 5 and maximum 50 characters, at least 1 uppercase letter, 1 lowercase letter, 1 number and one special character @$!%*?&")
+          p(class="validation-error password") Password Invalid
+        .form-item
+          label(for='confirm_password')
+          input(type='password', name='confirm_password', required='required', placeholder='Confirm Password' pattern="^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,50}$" minlength=5 maxlength=50 title="Both passwords should match")
+          p(class="validation-error confirm_password") Passwords do not match
+        .button-panel
+          input.button(type='submit', title='Add', value='Add')
+      .form-footer
+    .form-wrapper
+      h1 Search User
+      form(id="form_search" novalidate)
+        .form-item
+          label(for='search_email')
+          input(type='email', name='search_email', required='required', placeholder='Email Address' title="Must be a valid Email ID within 25 characters" maxlength=25)
+          p(class="validation-error searchEmail") Email ID Invalid
+        .button-panel
+          input.button(type='submit', title='Search', value='Search')
+      .form-footer
+        .search_result
+        .users
+  script(src='/javascripts/addUser.js')
+  script(src='/javascripts/searchUser.js')
