@@ -1,3 +1,4 @@
+// custom validation attributes for inputs
 const validityConfig = {
   username: {
     MIN_LENGTH: 3,
@@ -27,6 +28,7 @@ const validityConfig = {
   }
 };
 
+// Monitor validation for inputs
 const inputValidityState = {
   username: false,
   email: false,
@@ -43,7 +45,8 @@ form.addEventListener("submit", handleSubmit);
 async function handleSubmit(e) {
   e.preventDefault();
   const formData = getFormData();
-  if (customCheckvalidity(formData) && form.checkValidity() ) {
+  if (customCheckvalidity(formData) && form.checkValidity()) {
+    // Remove all existing messages before submitting again
     showValidationMessage();
     try {
       const response = await fetch(URL, {
@@ -60,6 +63,7 @@ async function handleSubmit(e) {
       console.log(e)
     }
   } else {
+    // Show invalid messages
     showValidationMessage();
   }
 }
@@ -76,6 +80,7 @@ function getFormData() {
 }
 
 function customCheckvalidity(formData) {
+  //dynamic function calls for each input. Could have avoided this and wrote all manuallly
   for (input in formData) {
     let validityCheckFunc;
     switch (input) {
@@ -101,13 +106,14 @@ function customCheckvalidity(formData) {
       inputValidityState[input] = validityCheckFunc(formData[input]);
     }
   }
-
+  // Check if every input state is valid
   if (Object.values(inputValidityState).every(item => item === true))
     return true;
   return false;
 }
 
 function showValidationMessage() {
+  // red-colored validation messages beneath input fields
   for (let input in inputValidityState) {
     const paraElement = document.querySelector(`.${input}`)
     if (!inputValidityState[input]) paraElement.classList.add('show')

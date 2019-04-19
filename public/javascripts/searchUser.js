@@ -1,3 +1,4 @@
+// Extending and renaming from addUser.js
 const emailValidityConfig = {
   searchEmail: {
     MAX_LENGTH: 25,
@@ -97,6 +98,7 @@ function showValidationSearchMessage() {
   }
 }
 
+// helper fn to remove html if no user found
 function clearCurrentUsers() {
   users.innerHTML = ''
 }
