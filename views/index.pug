@@ -15,7 +15,7 @@ block content
             p(class="validation-error email") Email ID Invalid
         .form-item
           label(for='phoneno')
-          input(type='number', name='phoneno', required='required', placeholder='Phone Number' pattern='[0–9]' minlength=10 maxlength=10 title="Your 10 digit phone number")
+          input(type='number', name='phoneno', required='required', placeholder='Phone Number' pattern='[0–9]' min=10 title="Your 10 digit phone number")
           p(class="validation-error phoneno") Phone Number Invalid
         .form-item
           label(for='password')

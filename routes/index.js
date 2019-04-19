@@ -1,20 +1,85 @@
 const router = require("express").Router();
+const { check, validationResult } = require("express-validator/check");
+const { sanitizeBody, sanitizeQuery } = require("express-validator/filter");
+const crypto = require('crypto')
+
+
 const User = require("../models").User;
+
 /* GET home page. */
 router.get("/", (req, res, next) => {
   res.render("index");
 });
 
+const createUserValidations = [
+  check("username")
+    .isLength({
+      min: 3,
+      max: 25
+    })
+    .trim()
+    .escape(),
+  check("email")
+    .trim()
+    .isLength({ max: 25 })
+    .isEmail()
+    .normalizeEmail(),
+  check("phoneno")
+    .trim()
+    .isLength({
+      min: 10,
+      max: 10
+    })
+    .isNumeric(),
+  check("password")
+    .trim()
+    .isLength({
+      min: 5,
+      max: 50
+    }),
+  sanitizeBody("username"),
+  sanitizeBody("email"),
+  sanitizeBody("phoneno"),
+  sanitizeBody("password")
+];
+
+const getUserValidations = [
+  check("email")
+    .trim()
+    .isLength({ max: 25 })
+    .isEmail()
+    .normalizeEmail(),
+  sanitizeQuery("email")
+];
+
+const deleteUserValidations = [
+  check("email")
+    .trim()
+    .isLength({ max: 25 })
+    .isEmail()
+    .normalizeEmail(),
+  sanitizeQuery("email")
+];
+
 /* POST req to create or update user */
-router.post("/", async (req, res, next) => {
+router.post("/", createUserValidations, async (req, res, next) => {
+  // Finds the validation errors in this request and wraps them in an object
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ body: {}, error: errors.array() });
+  }
+
   try {
+    const hash = crypto.createHash('md5').update(req.body.password).digest("hex")
+
     const [user, created] = await User.findOrCreate({
+      attributes: { exclude: ['password'] },
       where: { emailId: req.body.email },
       defaults: {
         userName: req.body.username,
         emailId: req.body.email,
         phoneNo: req.body.phoneno,
-        password: req.body.password,
+        password: hash,
         dateTime: new Date()
       }
     });
@@ -24,13 +89,13 @@ router.post("/", async (req, res, next) => {
           userName: req.body.username,
           emailId: req.body.email,
           phoneNo: req.body.phoneno,
-          password: req.body.password,
+          password: hash,
           dateTime: new Date()
         },
         {
           where: {
             emailId: req.body.email,
-            password: req.body.password
+            password: hash,
           }
         }
       );
@@ -51,6 +116,7 @@ router.post("/", async (req, res, next) => {
         error: ""
       });
     }
+    delete user.dataValues.password;
     return res.status(201).json({
       body: {
         message: "Resource successfully created",
@@ -68,9 +134,17 @@ router.post("/", async (req, res, next) => {
 });
 
 /* GET req to find user */
-router.get("/user", async (req, res, next) => {
+router.get("/user", getUserValidations, async (req, res, next) => {
+
+    // Finds the validation errors in this request and wraps them in an object
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ body: {}, error: errors.array() });
+    }
+
   try {
     const user = await User.findOne({
+      attributes: { exclude: ['password'] },
       where: {
         emailId: req.query.email
       }
@@ -101,7 +175,14 @@ router.get("/user", async (req, res, next) => {
 });
 
 /* DELETE req to delete user */
-router.delete("/user", async (req, res, next) => {
+router.delete("/user", deleteUserValidations, async (req, res, next) => {
+
+    // Finds the validation errors in this request and wraps them in an object
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ body: {}, error: errors.array() });
+    }
+
   try {
     const user = await User.destroy({
       where: {
